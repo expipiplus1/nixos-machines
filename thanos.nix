@@ -86,12 +86,45 @@ in
     LABEL="helios4_hwmon_end"
   '';
 
+  ########################################
+  # Services
+  ########################################
+
+  services.minio = {
+    enable = true;
+    browser = true;
+    dataDir = "/data/minio";
+  };
 
   ########################################
   # Networking
   ########################################
 
   networking.hostName = "thanos";
+  networking.interfaces.eth0.macAddress = "5A:B5:1A:A6:79:5E";
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      # HTTP(S)
+      80
+      443
+      # NFS
+      111
+      4000
+      4001
+      4002
+      2049
+    ];
+    allowedUDPPorts = [
+      # NFS
+      111
+      4000
+      4001
+      4002
+      2049
+    ];
+  };
 
   services.openssh = {
     enable = true;
@@ -103,6 +136,56 @@ in
     enable = true;
   };
 
+  services.nginx = {
+    enable = true;
+    virtualHosts = {
+      "home.monoid.al" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/" = {
+            root = "/var/www";
+          };
+        };
+      };
+      "minio.home.monoid.al" = {
+          forceSSL = true;
+          enableACME = true;
+          extraConfig = ''
+            # To allow special characters in headers
+            ignore_invalid_headers off;
+            # Allow any size file to be uploaded.
+            client_max_body_size 0;
+            # To disable buffering
+            proxy_buffering off;
+          '';
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:9000";
+              extraConfig = ''
+                proxy_set_header Host $http_host;
+                # health_check uri=/minio/health/ready;
+              '';
+            };
+          };
+       };
+    };
+  };
+
+  services.nfs.server = {
+    enable = true;
+    exports = ''
+      /export               192.168.1.0/24(rw,fsid=0,no_subtree_check)
+      /export/share         192.168.1.0/24(rw,nohide,insecure,no_subtree_check)
+    '';
+    statdPort = 4000;
+    lockdPort = 4001;
+    mountdPort = 4002;
+  };
+  fileSystems."/export/share" = {
+    device = "/data/share";
+    options = [ "bind" ];
+  };
 
   ########################################
   # Misc

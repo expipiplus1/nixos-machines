@@ -96,6 +96,10 @@ in
     dataDir = "/data/minio";
   };
 
+  services.slimserver = {
+    enable = true;
+  };
+
   ########################################
   # Networking
   ########################################
@@ -230,6 +234,7 @@ in
 
   nix.trustedUsers = [ "root" "@wheel" ];
 
+  nixpkgs.config.allowUnfree = true;
   nix.nixPath = [
     "nixpkgs=/etc/nixpkgs"
     "nixos-config=/etc/nixos/configuration.nix"

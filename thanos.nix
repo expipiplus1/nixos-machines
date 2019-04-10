@@ -206,6 +206,8 @@ in
     tmux
     vim
     gcc
+    lm_sensors
+    hddtemp
   ];
 
   ########################################

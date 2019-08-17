@@ -29,7 +29,9 @@ in
             {name = "helios4-fan"; patch = ./patches/helios4-fan.patch;}
           ];
           defconfig = "mvebu_v7_defconfig";
-          structuredExtraConfig = { DRM="n"; };
+          structuredExtraConfig = 
+            with import (pkgs.path + "/lib/kernel.nix") { inherit lib; version = null; };
+            { DRM = no; };
         };
     in  recurseIntoAttrs (linuxPackagesFor linux_helios4);
 

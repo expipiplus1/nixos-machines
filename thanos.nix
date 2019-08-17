@@ -228,14 +228,14 @@ in
           '';
           locations = {
             "/" = {
-              proxyPass = "http://localhost:9000";
+              proxyPass = "http://localhost:9005";
               extraConfig = ''
-                proxy_set_header Host $http_host;
+                proxy_set_header Host $host;
                 # health_check uri=/minio/health/ready;
               '';
             };
           };
-       };
+      };
     };
   };
 

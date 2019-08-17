@@ -182,6 +182,10 @@ in
         locations = {
           "/" = {
             root = "/var/www";
+            extraConfig = ''
+              index index.html;
+              autoindex on;
+            '';
           };
         };
       };

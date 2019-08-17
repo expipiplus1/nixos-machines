@@ -236,7 +236,27 @@ in
             };
           };
       };
+      "restic.thanos" = {
+        locations."/" = {
+	  proxyPass = "http://localhost:8000";
+          extraConfig = ''
+            allow 192.168.1.0/24;
+            allow 127.0.0.1;
+            deny all;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            # Allow any size file to be uploaded.
+            client_max_body_size 0;
+          '';
+        };
+      };
     };
+  };
+
+  services.restic.server = {
+    enable = true;
+    dataDir = "/data/restic";
   };
 
   services.nfs.server = {

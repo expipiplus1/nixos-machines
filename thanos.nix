@@ -5,6 +5,13 @@ let
     crossSystem = { system="armv7l-linux"; };
     system="x86_64-linux";
   };
+
+  helios4 = pkgs.fetchFromGitHub {
+    owner = "expipiplus1";
+    repo = "helios4-nix";
+    rev = "05366da5d70693ca67165a2eb0e94cd7213a9d17";
+    sha256 = "1ckhvpqqhqz8xxsc8n95zgqh097rr4g6vw7r7q43hn8pkfnqi2ka";
+  };
 in
 
 {
@@ -19,21 +26,7 @@ in
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
 
-  # Build the kernel on on x86-64
-  # A patch is included to get both PWM fans working
-  boot.kernelPackages = with crossPkgs;
-    let linux_helios4 = linux_4_19.override {
-          kernelPatches = [
-            kernelPatches.bridge_stp_helper
-            kernelPatches.modinst_arg_list_too_long
-            {name = "helios4-fan"; patch = ./patches/helios4-fan.patch;}
-          ];
-          defconfig = "mvebu_v7_defconfig";
-          structuredExtraConfig = 
-            with import (pkgs.path + "/lib/kernel.nix") { inherit lib; version = null; };
-            { DRM = no; };
-        };
-    in  recurseIntoAttrs (linuxPackagesFor linux_helios4);
+  boot.kernelPackages = import helios4 + "./helios4-kernelPackages.nix" { inherit pkgs; };
 
   ########################################
   # Hardware

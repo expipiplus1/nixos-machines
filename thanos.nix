@@ -238,6 +238,16 @@ in
   nix.trustedUsers = [ "root" "@wheel" ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (self: super: {
+      mesa_noglu = super.mesa_noglu.override {
+        llvmPackages = self.llvmPackages_6;
+      };
+      # llvmPackages_6 = crossPkgs.llvmPackages_6;
+      # llvmPackages_7 = crossPkgs.llvmPackages_7;
+    })
+  ];
+
   nix.nixPath = [
     "nixpkgs=/etc/nixpkgs"
     "nixos-config=/etc/nixos/configuration.nix"

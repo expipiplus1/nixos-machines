@@ -189,6 +189,19 @@ in
           };
         };
       };
+      "binarycache.thanos" = {
+        locations."/" = {
+	  proxyPass = "http://localhost:${toString config.services.nix-serve.port}";
+          extraConfig = ''
+            allow 192.168.1.0/24;
+            allow 127.0.0.1;
+            deny all;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          '';
+        };
+      };
       "pihole.thanos" = {
         locations."/" = {
 	  proxyPass = "http://localhost:3080";
@@ -319,6 +332,11 @@ in
     mandatoryFeatures = [];
   }] ;
   nix.distributedBuilds = true;
+
+  services.nix-serve = {
+    enable = true;
+    secretKeyFile = "/var/cache-priv-key.pem";
+  };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

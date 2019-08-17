@@ -92,9 +92,10 @@ in
   ########################################
 
   services.minio = {
-    enable = true;
+    enable = false;
     browser = true;
     dataDir = "/data/minio";
+    listenAddress = ":9005";
   };
 
   services.slimserver = {

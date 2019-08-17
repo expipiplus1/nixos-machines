@@ -155,27 +155,6 @@ in
           '';
         };
       };
-      "minio.home.monoid.al" = {
-          forceSSL = true;
-          enableACME = true;
-          extraConfig = ''
-            # To allow special characters in headers
-            ignore_invalid_headers off;
-            # Allow any size file to be uploaded.
-            client_max_body_size 0;
-            # To disable buffering
-            proxy_buffering off;
-          '';
-          locations = {
-            "/" = {
-              proxyPass = "http://localhost:9005";
-              extraConfig = ''
-                proxy_set_header Host $host;
-                # health_check uri=/minio/health/ready;
-              '';
-            };
-          };
-      };
       "restic.thanos" = {
         locations."/" = {
           proxyPass = "http://localhost:8000";

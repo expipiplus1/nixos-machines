@@ -10,7 +10,7 @@
 
   boot.initrd.availableKernelModules = [ "ahci_mvebu" ];
   boot.kernelModules = [ "lm75" ];
-  boot.extraModulePackages = [ ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.exfat-nofuse ];
 
   fileSystems."/" =
     { device = "/dev/sda1";

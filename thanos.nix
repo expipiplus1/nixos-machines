@@ -112,6 +112,8 @@ in
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
+      # DNS
+      53
       # HTTP(S)
       80
       443
@@ -138,6 +140,29 @@ in
     passwordAuthentication = false;
   };
 
+  docker-containers.pihole = {
+    image = "pihole/pihole:latest";
+    ports = [
+      "192.168.1.148:53:53/tcp"
+      "192.168.1.148:53:53/udp"
+      "3080:80"
+      "30443:443"
+    ];
+    volumes = [
+      "/var/lib/pihole/:/etc/pihole/"
+      "/var/lib/dnsmasq/.d:/etc/dnsmasq.d/"
+    ];
+    environment = {
+      ServerIP = "192.168.1.148";
+    };
+    extraDockerOptions = [
+      "--cap-add=NET_ADMIN"
+      "--dns=127.0.0.1"
+      "--dns=1.1.1.1"
+    ];
+    workdir = "/var/lib/pihole/";
+  };
+
   services.fail2ban = {
     enable = true;
   };
@@ -152,6 +177,19 @@ in
           "/" = {
             root = "/var/www";
           };
+        };
+      };
+      "pihole.thanos" = {
+        locations."/" = {
+	  proxyPass = "http://localhost:3080";
+          extraConfig = ''
+            allow 192.168.1.0/24;
+            allow 127.0.0.1;
+            deny all;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          '';
         };
       };
       "minio.home.monoid.al" = {

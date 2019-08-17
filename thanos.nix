@@ -131,7 +131,7 @@ in
       };
       "binarycache.thanos" = {
         locations."/" = {
-	  proxyPass = "http://localhost:${toString config.services.nix-serve.port}";
+          proxyPass = "http://localhost:${toString config.services.nix-serve.port}";
           extraConfig = ''
             allow 192.168.1.0/24;
             allow 127.0.0.1;
@@ -144,7 +144,7 @@ in
       };
       "pihole.thanos" = {
         locations."/" = {
-	  proxyPass = "http://localhost:3080";
+          proxyPass = "http://localhost:3080";
           extraConfig = ''
             allow 192.168.1.0/24;
             allow 127.0.0.1;
@@ -178,7 +178,7 @@ in
       };
       "restic.thanos" = {
         locations."/" = {
-	  proxyPass = "http://localhost:8000";
+          proxyPass = "http://localhost:8000";
           extraConfig = ''
             allow 192.168.1.0/24;
             allow 127.0.0.1;

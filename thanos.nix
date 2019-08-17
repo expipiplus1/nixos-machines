@@ -123,6 +123,10 @@ in
       4001
       4002
       2049
+      # Slimserver
+      9000
+      9001
+      3483
     ];
     allowedUDPPorts = [
       # NFS
@@ -131,6 +135,8 @@ in
       4001
       4002
       2049
+      # Slimserver
+      3483
     ];
   };
 

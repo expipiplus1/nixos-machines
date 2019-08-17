@@ -8,8 +8,6 @@
     [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
 
-  boot.initrd.availableKernelModules = [ "ahci_mvebu" ];
-  boot.kernelModules = [ "lm75" ];
   boot.extraModulePackages = [ config.boot.kernelPackages.exfat-nofuse ];
 
   fileSystems."/" =

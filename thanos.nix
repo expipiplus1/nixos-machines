@@ -5,19 +5,12 @@ let
     crossSystem = { system="armv7l-linux"; };
     system="x86_64-linux";
   };
-
-  helios4 = pkgs.fetchFromGitHub {
-    owner = "expipiplus1";
-    repo = "helios4-nix";
-    rev = "df4b3b5d1bdcdb76eff68b2978aef0392ba607eb";
-    sha256 = "1wzh5biwfwn9llxkk4kggwblmlpf9xnkmabk70w8ahw07d5pn5sm";
-  };
 in
 
 {
   imports =
     [ ./hardware-configuration/thanos.nix
-      (helios4 + "/helios4.nix")
+      ./helios4-nix/helios4.nix
     ];
 
   ########################################

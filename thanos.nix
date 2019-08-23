@@ -43,26 +43,19 @@ in
       # HTTP(S)
       80
       443
-      # NFS
-      111
-      4000
-      4001
-      4002
-      2049
       # Slimserver
       9000
       9001
       3483
+      # Samba
+      139
+      445
     ];
     allowedUDPPorts = [
-      # NFS
-      111
-      4000
-      4001
-      4002
-      2049
       # Slimserver
       3483
+      # Samba
+      137 138
     ];
   };
 
@@ -177,6 +170,21 @@ in
   fileSystems."/export/share" = {
     device = "/data/share";
     options = [ "bind" ];
+  };
+
+  services.samba = {
+    enable = true;
+    shares = {
+      share = {
+        browseable = "yes";
+        comment = "Thanos share";
+        "guest ok" = "yes";
+        path = "/data/share";
+        "read only" = "no";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+      };
+    };
   };
 
   ########################################

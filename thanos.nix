@@ -45,7 +45,6 @@ in
       443
       # Slimserver
       9000
-      9001
       3483
       # Samba
       139

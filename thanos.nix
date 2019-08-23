@@ -108,6 +108,7 @@ in
       "home.monoid.al" = {
         forceSSL = true;
         enableACME = true;
+        default = true;
         locations = {
           "/" = {
             root = "/var/www";

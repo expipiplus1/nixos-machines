@@ -222,6 +222,12 @@ in
     };
   };
 
+  services.nullmailer = {
+    enable = true;
+    remotesFile = "/etc/nullmailer-credentials";
+    config.defaulthost = "home.monoid.al";
+  };
+
   ########################################
   # Misc
   ########################################

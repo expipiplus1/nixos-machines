@@ -62,6 +62,7 @@ in
     enable = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
+    challengeResponseAuthentication = false;
   };
 
   docker-containers.pihole = {

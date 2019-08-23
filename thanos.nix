@@ -24,13 +24,6 @@ in
   # Services
   ########################################
 
-  services.minio = {
-    enable = false;
-    browser = true;
-    dataDir = "/data/minio";
-    listenAddress = ":9005";
-  };
-
   services.slimserver = {
     enable = true;
   };

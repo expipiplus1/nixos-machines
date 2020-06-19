@@ -374,7 +374,17 @@ in
     speedFactor = 2;
     supportedFeatures = ["big-parallel"]; # To get it to build linux
     mandatoryFeatures = [];
-  }] ;
+  }
+  {
+    hostName = "orion";
+    sshUser = "nix";
+    sshKey = "/root/.ssh/id_buildfarm";
+    system = "x86_64-linux";
+    maxJobs = 16;
+    speedFactor = 4;
+    supportedFeatures = ["big-parallel"]; # To get it to build linux
+    mandatoryFeatures = [];
+  }];
   nix.distributedBuilds = true;
 
   services.nix-serve = {

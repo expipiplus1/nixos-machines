@@ -81,6 +81,14 @@ in
     permitRootLogin = "no";
     passwordAuthentication = false;
     challengeResponseAuthentication = false;
+    allowSFTP = false;
+    extraConfig = ''
+      Subsystem sftp internal-sftp
+      Match user sshfs
+        ForceCommand internal-sftp
+        ChrootDirectory /data/share/linux-isos
+        AllowTcpForwarding no
+    '';
   };
 
   docker-containers.pihole = {

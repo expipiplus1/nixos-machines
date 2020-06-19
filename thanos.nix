@@ -33,7 +33,20 @@ in
   ########################################
 
   networking.hostName = "thanos";
-  networking.interfaces.eth0.macAddress = "5A:B5:1A:A6:79:5E";
+  networking.interfaces.eth0 = {
+    macAddress = "5A:B5:1A:A6:79:5E";
+  };
+  networking.dhcpcd.extraConfig = ''
+    # define static profile
+    profile static_eth0
+    static ip_address=192.168.1.19/24
+    static routers=192.168.1.1
+    static domain_name_servers=192.168.1.148 192.168.1.20
+    
+    # fallback to static profile on eth0
+    interface eth0
+    fallback static_eth0
+  '';
 
   networking.firewall = {
     enable = true;

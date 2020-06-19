@@ -245,6 +245,8 @@ in
   services.restic.server = {
     enable = true;
     dataDir = "/data/restic";
+    privateRepos = true;
+    appendOnly = true;
   };
 
   services.nfs.server = {

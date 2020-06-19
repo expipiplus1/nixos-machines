@@ -62,6 +62,8 @@ in
       # Samba
       139
       445
+      # Socks
+      12345
     ];
     allowedUDPPorts = [
       # Slimserver

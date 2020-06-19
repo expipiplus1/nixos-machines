@@ -129,6 +129,11 @@ in
     };
   };
 
+  security.acme = {
+    email = "acme@sub.monoid.al";
+    acceptTerms = true;
+  };
+
   services.nginx = {
     enable = true;
     virtualHosts = {

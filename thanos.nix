@@ -340,6 +340,9 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
+      libndctl = crossPkgs.libndctl;
+      restic = crossPkgs.restic;
+      rng-tools = super.rng-tools.override { withPkcs11 = false; };
       mesa_noglu = super.mesa_noglu.override {
         llvmPackages = self.llvmPackages_6;
       };

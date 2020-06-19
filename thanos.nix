@@ -363,6 +363,10 @@ in
     # "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
     "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
   ];
+  networking.hosts = {
+    "192.168.1.77" = [ "riza" ];
+    "192.168.1.121" = [ "orion" ];
+  };
   nix.buildMachines = [ {
     hostName = "riza";
     system = "x86_64-linux";

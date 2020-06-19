@@ -266,13 +266,18 @@ in
 
   services.samba = {
     enable = true;
+    syncPasswordsByPam = true;	
+    extraConfig = ''
+      map to guest = Bad User
+    '';
     shares = {
       share = {
         browseable = "yes";
         comment = "Thanos share";
         "guest ok" = "yes";
         path = "/data/share";
-        "read only" = "no";
+        writable = "yes";
+        "force user" = "root";
         "create mask" = "0644";
         "directory mask" = "0755";
       };

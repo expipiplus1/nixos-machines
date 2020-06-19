@@ -136,6 +136,9 @@ in
 
   services.nginx = {
     enable = true;
+    appendHttpConfig = ''
+      server_names_hash_bucket_size 64;
+    '';
     virtualHosts = {
       "home.monoid.al" = {
         forceSSL = true;

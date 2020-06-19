@@ -91,7 +91,8 @@ in
     '';
   };
 
-  docker-containers.pihole = {
+  virtualisation.oci-containers.backend = "docker";
+  virtualisation.oci-containers.containers.pihole = {
     image = "pihole/pihole:latest";
     ports = [
       "192.168.1.148:53:53/tcp"
@@ -106,7 +107,7 @@ in
     environment = {
       ServerIP = "192.168.1.148";
     };
-    extraDockerOptions = [
+    extraOptions = [
       "--cap-add=NET_ADMIN"
       "--dns=127.0.0.1"
       "--dns=1.1.1.1"

@@ -307,6 +307,7 @@ in
     gcc
     lm_sensors
     hddtemp
+    restic
   ];
 
   ########################################

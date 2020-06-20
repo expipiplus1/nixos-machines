@@ -297,6 +297,8 @@ in
   time.timeZone = "Asia/Singapore";
 
   environment.noXlibs = true;
+  services.udisks2.enable = !config.environment.noXlibs; # Pulls in X11
+
   environment.systemPackages = with pkgs; [
     file
     git
@@ -342,14 +344,8 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
-      libndctl = crossPkgs.libndctl;
-      restic = crossPkgs.restic;
-      rng-tools = super.rng-tools.override { withPkcs11 = false; };
-      mesa_noglu = super.mesa_noglu.override {
-        llvmPackages = self.llvmPackages_6;
-      };
-      # llvmPackages_6 = crossPkgs.llvmPackages_6;
-      # llvmPackages_7 = crossPkgs.llvmPackages_7;
+      rng-tools = super.rng-tools.override {withPkcs11 = false;};
+      llvmPackages_9 = crossPkgs.llvmPackages_9;
     })
   ];
 

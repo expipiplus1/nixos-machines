@@ -91,7 +91,7 @@ in
     '';
   };
 
-  virtualisation.oci-containers.backend = "docker";
+  virtualisation.oci-containers.backend = "podman";
   virtualisation.oci-containers.containers.pihole = {
     image = "pihole/pihole:latest";
     ports = [
@@ -102,7 +102,7 @@ in
     ];
     volumes = [
       "/var/lib/pihole/:/etc/pihole/"
-      "/var/lib/dnsmasq/.d:/etc/dnsmasq.d/"
+      "/var/lib/dnsmasq.d:/etc/dnsmasq.d/"
     ];
     environment = {
       ServerIP = "192.168.1.148";

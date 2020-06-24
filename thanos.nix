@@ -66,6 +66,8 @@ in
       12345
     ];
     allowedUDPPorts = [
+      # DNS
+      53
       # Slimserver
       3483
       # Samba
@@ -104,13 +106,10 @@ in
       "/var/lib/pihole/:/etc/pihole/"
       "/var/lib/dnsmasq.d:/etc/dnsmasq.d/"
     ];
-    environment = {
-      ServerIP = "192.168.1.148";
-    };
     extraOptions = [
-      "--cap-add=NET_ADMIN"
       "--dns=127.0.0.1"
       "--dns=1.1.1.1"
+      "--network=host"
     ];
     workdir = "/var/lib/pihole/";
   };

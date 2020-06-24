@@ -248,21 +248,6 @@ in
     appendOnly = true;
   };
 
-  services.nfs.server = {
-    enable = true;
-    exports = ''
-      /export               192.168.1.0/24(rw,fsid=0,no_subtree_check)
-      /export/share         192.168.1.0/24(rw,nohide,insecure,no_subtree_check)
-    '';
-    statdPort = 4000;
-    lockdPort = 4001;
-    mountdPort = 4002;
-  };
-  fileSystems."/export/share" = {
-    device = "/data/share";
-    options = [ "bind" ];
-  };
-
   services.samba = {
     enable = true;
     syncPasswordsByPam = true;	

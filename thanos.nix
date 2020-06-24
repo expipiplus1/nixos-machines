@@ -93,7 +93,7 @@ in
     '';
   };
 
-  virtualisation.oci-containers.backend = "podman";
+  virtualisation.oci-containers.backend = "docker";
   virtualisation.oci-containers.containers.pihole = {
     image = "pihole/pihole:latest";
     ports = [
@@ -109,7 +109,6 @@ in
     extraOptions = [
       "--dns=127.0.0.1"
       "--dns=1.1.1.1"
-      "--network=host"
     ];
     workdir = "/var/lib/pihole/";
   };

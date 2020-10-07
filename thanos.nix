@@ -263,11 +263,23 @@ in
     appendOnly = true;
   };
 
+  # fix error in service log
+  #
+  # thanos smbd[18060]: [2020/07/10 13:24:48.294792,  0] ../../source3/lib/sysquotas.c:565(sys_get_quota)
+  # thanos smbd[18060]:   sys_path_to_bdev() failed for path [.]!
+  security.pam.services.samba-smbd.limits = [
+    { domain = "*"; type = "soft"; item = "nofile"; value = 16384; }
+    { domain = "*"; type = "hard"; item = "nofile"; value = 32768; }
+  ];
   services.samba = {
     enable = true;
-    syncPasswordsByPam = true;	
+    syncPasswordsByPam = false;
     extraConfig = ''
       map to guest = Bad User
+      get quota command = ${pkgs.writeScript "smb-quota.sh" ''
+        #!${pkgs.bash}/bin/bash
+        echo "0 0 0 0 0 0 0"
+      ''}
     '';
     shares = {
       share = {

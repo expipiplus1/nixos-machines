@@ -346,6 +346,19 @@ in
     ];
   };
 
+  users.users.emma = {
+    name = "emma";
+    group = "users";
+    hashedPassword = "$6$R71AjWfi.7dWVvA$sSR4eJ0VBPDJ53IvEFflKue5Eitgr8DfvV05cT.3YW0177skQX/XJOT1KQAHHO8wrYh6qWNmXHQX1vI94L504.";
+  };
+
+  users.users.sshfs = {
+    isNormalUser = false;
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkqMncj+6l1p4BIFpJD7f1oddOi9hCTyUcj2DDKEYsJD4q9lObdlPUpTkI/1C95yC0EtTC7Gv1R4Z5i9dYtiKYDHSkD+GjxSAnmrG37vX7bYgqYaSP4qcqbFIAUfokXHaAT22cjCxatZuZjkA8jJbAVNPX8k6f+MwCbjGWsFGRMBuacVwA3/dx1d2eYGy5rVPAN7bnTh9HWIPKiSNm2/1WafzkmE0F+wXJ4e+i3eNNcyWxufCH5+sq/V2471PX0spco/2vg5SvnoQOL60H2N6Lxto804mXNzJPlNPPcbE6OrQ/wMkAE6ESh/X4gpq8qILPJHMIhxvZ4Nggi0YAoovn jophish@sen"
+    ];
+  };
+
 
   ########################################
   # Nix

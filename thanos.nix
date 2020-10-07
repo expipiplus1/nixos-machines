@@ -29,6 +29,11 @@ in
     enable = true;
   };
 
+  services.btrfs.autoScrub = {
+    enable = true;
+    fileSystems = [ "/" ];
+  };
+
   ########################################
   # Networking
   ########################################
@@ -135,6 +140,9 @@ in
 
   services.nginx = {
     enable = true;
+    commonHttpConfig = ''
+      limit_req_zone $binary_remote_addr zone=default:10m rate=120r/m;
+    '';
     appendHttpConfig = ''
       server_names_hash_bucket_size 64;
     '';
@@ -149,6 +157,13 @@ in
             extraConfig = ''
               index index.html;
               autoindex on;
+            '';
+          };
+          "/quote" = {
+            proxyPass = "http://localhost:4747";
+            extraConfig = ''
+              auth_basic off;
+              limit_req zone=default burst=5;
             '';
           };
         };

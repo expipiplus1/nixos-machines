@@ -309,6 +309,7 @@ in
 
   environment.noXlibs = true;
   services.udisks2.enable = !config.environment.noXlibs; # Pulls in X11
+  nixpkgs.config.cairo.gl = false;
 
   environment.systemPackages = with pkgs; [
     file

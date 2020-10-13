@@ -14,11 +14,15 @@
   nixpkgs.config.allowUnfree = true;
 
   boot.loader.grub.enable = false;
-  boot.loader.generic-extlinux-compatible.enable = true;
+  boot.loader.raspberryPi = {
+    enable = true;
+    version = 3;
+    uboot.enable = true;
+  };
 
   boot.consoleLogLevel = lib.mkDefault 7;
   # https://github.com/NixOS/nixpkgs/issues/82455
-  boot.kernelPackages = pkgs.linuxPackages_4_19;
+  boot.kernelPackages = pkgs.linuxPackages_5_4;
 
   # The serial ports listed here are:
   # - ttyS0: for Tegra (Jetson TX1)

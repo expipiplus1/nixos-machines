@@ -131,9 +131,27 @@
     ];
   };
 
-  # nixpkgs stuff
-  nix.nixPath =
-    [ "nixpkgs=/etc/nixpkgs" "nixos-config=/etc/nixos/configuration.nix" ];
+  #
+  # Nix
+  #
+  nix.buildMachines = [ {
+    hostName = "riza";
+    system = "x86_64-linux";
+    maxJobs = 8;
+    speedFactor = 2;
+    supportedFeatures = ["big-parallel"]; # To get it to build linux
+    mandatoryFeatures = [];
+  }
+  {
+    hostName = "orion";
+    sshUser = "nix";
+    sshKey = "/root/.ssh/id_buildfarm";
+    system = "x86_64-linux";
+    maxJobs = 16;
+    speedFactor = 4;
+    supportedFeatures = ["big-parallel"]; # To get it to build linux
+    mandatoryFeatures = [];
+  }];
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

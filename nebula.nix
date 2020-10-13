@@ -77,6 +77,8 @@
   networking.hosts = {
     "192.168.1.148" = ["thanos" "binarycache.thanos" "restic.thanos" "pihole.thanos"];
     "192.168.1.20" = ["nebula" "pihole.nebula"];
+    "192.168.1.77" = [ "riza" ];
+    "192.168.1.121" = [ "orion" ];
   };
 
   #

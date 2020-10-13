@@ -85,26 +85,6 @@
   # Services
   #
 
-  virtualisation.oci-containers.backend = "docker";
-  virtualisation.oci-containers.containers.pihole = {
-    image = "pihole/pihole:latest";
-    ports = [
-      "192.168.1.20:53:53/tcp"
-      "192.168.1.20:53:53/udp"
-      "3080:80"
-      "30443:443"
-    ];
-    volumes = [
-      "/var/lib/pihole/:/etc/pihole/"
-      "/var/lib/dnsmasq.d:/etc/dnsmasq.d/"
-    ];
-    extraOptions = [
-      "--dns=127.0.0.1"
-      "--dns=1.1.1.1"
-    ];
-    workdir = "/var/lib/pihole/";
-  };
-
   services.fail2ban = {
     enable = true;
     jails = {
@@ -140,6 +120,23 @@
       };
     };
   };
+  services.dnsmasq.enable = true;
+  services.dnsmasq.extraConfig = ''
+    domain-needed
+    bogus-priv
+    no-resolv
+
+    server=208.67.220.220
+    server=8.8.4.4
+
+    cache-size=10000
+    log-queries
+    log-facility=/tmp/ad-block.log
+    local-ttl=300
+
+    conf-file=/etc/assets/hosts-blocklists/domains.txt
+    addn-hosts=/etc/assets/hosts-blocklists/hostnames.txt
+  '';
 
   #
   # Users

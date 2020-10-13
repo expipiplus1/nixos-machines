@@ -87,39 +87,8 @@
 
   services.fail2ban = {
     enable = true;
-    jails = {
-      nginx-botsearch = ''
-        filter   = nginx-botsearch
-        action = iptables-multiport[name=NGINXBOT, port=http,https, protocol=tcp]
-      '';
-      nginx-http-auth = ''
-        filter   = nginx-http-auth
-        action = iptables-multiport[name=NGINXAUTH, port=http,https, protocol=tcp]
-      '';
-    };
   };
 
-  services.nginx = {
-    enable = true;
-    appendHttpConfig = ''
-      server_names_hash_bucket_size 64;
-    '';
-    virtualHosts = {
-      "pihole.nebula" = {
-        locations."/" = {
-          proxyPass = "http://localhost:3080";
-          extraConfig = ''
-            allow 192.168.1.0/24;
-            allow 127.0.0.1;
-            deny all;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          '';
-        };
-      };
-    };
-  };
   services.dnsmasq.enable = true;
   services.dnsmasq.extraConfig = ''
     domain-needed

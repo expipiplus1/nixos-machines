@@ -285,6 +285,9 @@ in
     restic
   ];
 
+  # No need to bring in a JS interpreter for the system
+  security.polkit.enable = false;
+
   ########################################
   # Users
   ########################################

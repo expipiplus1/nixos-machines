@@ -141,9 +141,6 @@ in
 
   services.nginx = {
     enable = true;
-    commonHttpConfig = ''
-      limit_req_zone $binary_remote_addr zone=default:10m rate=120r/m;
-    '';
     appendHttpConfig = ''
       server_names_hash_bucket_size 64;
     '';
@@ -160,39 +157,6 @@ in
               autoindex on;
             '';
           };
-          "/quote" = {
-            proxyPass = "http://localhost:4747";
-            extraConfig = ''
-              auth_basic off;
-              limit_req zone=default burst=5;
-            '';
-          };
-        };
-      };
-      "binarycache.thanos" = {
-        locations."/" = {
-          proxyPass = "http://localhost:${toString config.services.nix-serve.port}";
-          extraConfig = ''
-            allow 192.168.1.0/24;
-            allow 127.0.0.1;
-            deny all;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          '';
-        };
-      };
-      "pihole.thanos" = {
-        locations."/" = {
-          proxyPass = "http://localhost:3080";
-          extraConfig = ''
-            allow 192.168.1.0/24;
-            allow 127.0.0.1;
-            deny all;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          '';
         };
       };
       "restic.thanos" = {
@@ -208,28 +172,6 @@ in
             # Allow any size file to be uploaded.
             client_max_body_size 0;
           '';
-        };
-      };
-      "binarycache.home.monoid.al" = {
-        forceSSL = true;
-        enableACME = true;
-        extraConfig = ''
-          # To allow special characters in headers
-          ignore_invalid_headers off;
-          # Allow any size file to be uploaded.
-          client_max_body_size 0;
-          # To disable buffering
-          proxy_buffering off;
-        '';
-        locations = {
-          "/" = {
-            proxyPass = "http://localhost:${toString config.services.nix-serve.port}";
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            '';
-          };
         };
       };
       "restic.home.monoid.al" = {

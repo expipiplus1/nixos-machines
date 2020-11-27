@@ -28,14 +28,11 @@ in {
       path = /data/share/linux-isos
       valid users = ${user}
       read only = yes
+    [music]
+      path = /data/music
+      valid users = ${user}
+      read only = yes
     '';
-  };
-  systemd.services.macUserSetup = {
-    description = "idempotent directory setup for ${user}'s time machine";
-    requiredBy = [ "netatalk.service" ];
-    script = '' mkdir -p ${timeMachineDir}
-                chown --recursive ${user}:users ${timeMachineDir}
-                chmod --recursive 0750 ${timeMachineDir} '';
   };
   networking.firewall.allowedTCPPorts = [ 548 636 ];
 }

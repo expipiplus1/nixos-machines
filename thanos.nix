@@ -28,7 +28,7 @@ in
   ########################################
 
   services.slimserver = {
-    enable = true;
+    enable = false;
   };
 
   services.btrfs.autoScrub = {
@@ -65,8 +65,6 @@ in
       80
       443
       # Slimserver
-      9000
-      3483
       # Samba
       139
       445
@@ -77,7 +75,6 @@ in
       # DNS
       53
       # Slimserver
-      3483
       # Samba
       137 138
       # Mosh

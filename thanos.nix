@@ -12,6 +12,7 @@ in
     [ ./hardware-configuration/thanos.nix
       ./helios4-nix/helios4.nix
       ./afp.nix
+      ./quoth.nix
     ];
 
   ########################################

@@ -385,6 +385,12 @@ in
     secretKeyFile = "/var/cache-priv-key.pem";
   };
 
+  system.autoUpgrade = {
+    enable = true;
+    randomizedDelaySec = "45min";
+    flags = ["-k" "-j1" "--option" "build-cores" "1"];
+  };
+
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you

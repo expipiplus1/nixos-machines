@@ -21,7 +21,9 @@
       fsType = "btrfs";
     };
 
-  swapDevices = [ ];
+  swapDevices =
+    [ { device = "/dev/disk/by-uuid/915a3106-9b2f-447d-beff-d71cb48bedb8"; }
+    ];
 
   nix.maxJobs = lib.mkDefault 2;
 }

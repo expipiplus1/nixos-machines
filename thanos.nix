@@ -244,6 +244,24 @@ in
     config.defaulthost = "home.monoid.al";
   };
 
+  systemd.services.serialLog = {
+    wantedBy = [ "multi-user.target" ];
+    after = [ "multi-user.target" ];
+    description = "log serial on /dev/ttyUSB0";
+    path = with pkgs; [ bash coreutils tio expect ];
+    serviceConfig = {
+      Type = "simple";
+      LogsDirectory = "serial";
+      ExecStart = pkgs.writeShellScript "serial log" ''
+        logDir=$LOGS_DIRECTORY
+        logFile=$logDir/$(date --iso-8601=seconds)
+        tty=/dev/ttyUSB0
+        sleep infinity | unbuffer -p tio $tty >> "$logFile"
+      '';
+      Restart = "always";
+    };
+  };
+
   ########################################
   # Misc
   ########################################

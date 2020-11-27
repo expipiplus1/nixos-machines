@@ -324,32 +324,37 @@ in
     ];
   };
 
+  users.extraUsers.nix = {
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBMrsS7pSYHZX/6JN2+ndNK/gy7r2r2Jpv7PxfpjJeof root@thanos"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHEziWh0o8uJ0pBQDNAdSWJF5ZFO3Wo0akf0RvcvXGHR root@nebula"
+    ];
+    useDefaultShell = true;
+  };
 
   ########################################
   # Nix
   ########################################
 
-  nix.trustedUsers = [ "root" "@wheel" ];
+  nix.trustedUsers = [ "root" "@wheel" "nix" ];
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
       rng-tools = super.rng-tools.override {withPkcs11 = false;};
-      llvmPackages_9 = crossPkgs.llvmPackages_9;
     })
   ];
 
-  nix.nixPath = [
-    "nixpkgs=/etc/nixpkgs"
-    "nixos-config=/etc/nixos/configuration.nix"
-  ];
   nix.binaryCaches = [
     # "http://nixos-arm.dezgeg.me/channel"
     "https://cache.nixos.org/"
+    "s3://nix-cache?region=ap-southeast-1&scheme=http&endpoint=localhost:9002"
   ];
   nix.binaryCachePublicKeys = [
     # "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
     "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
+    "orion:s0C06f1M46DCpHUUP2r8iIrhfytkCbXWltMeMMa4jbw=%"
+    "expipiplus1/update-nix-fetchgit:Z33K0KEImsos+kVTFvZxfLxaBi+D1jEeB6cX0uCo7B0="
   ];
   networking.hosts = {
     "192.168.1.77" = [ "riza" ];
@@ -376,7 +381,7 @@ in
   nix.distributedBuilds = true;
 
   services.nix-serve = {
-    enable = true;
+    enable = false;
     secretKeyFile = "/var/cache-priv-key.pem";
   };
 

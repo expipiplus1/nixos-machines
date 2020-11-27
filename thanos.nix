@@ -98,25 +98,27 @@ in
     '';
   };
 
-  virtualisation.oci-containers.backend = "docker";
-  virtualisation.oci-containers.containers.pihole = {
-    image = "pihole/pihole:latest";
-    ports = [
-      "192.168.1.148:53:53/tcp"
-      "192.168.1.148:53:53/udp"
-      "3080:80"
-      "30443:443"
-    ];
-    volumes = [
-      "/var/lib/pihole/:/etc/pihole/"
-      "/var/lib/dnsmasq.d:/etc/dnsmasq.d/"
-    ];
-    extraOptions = [
-      "--dns=127.0.0.1"
-      "--dns=1.1.1.1"
-    ];
-    workdir = "/var/lib/pihole/";
-  };
+  # From https://github.com/NixOS/nixpkgs/issues/61617#issuecomment-623934193
+  services.dnsmasq.enable = true;
+  services.dnsmasq.extraConfig = ''
+    domain-needed
+    bogus-priv
+    no-resolv
+
+    server=208.67.220.220
+    server=8.8.4.4
+
+    listen-address=::1,127.0.0.1,192.168.1.148
+    bind-interfaces
+
+    cache-size=10000
+    log-queries
+    log-facility=/tmp/ad-block.log
+    local-ttl=300
+
+    conf-file=/etc/assets/hosts-blocklists/domains.txt
+    addn-hosts=/etc/assets/hosts-blocklists/hostnames.txt
+  '';
 
   services.fail2ban = {
     enable = true;

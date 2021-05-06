@@ -14,17 +14,23 @@
   nixpkgs.config.allowUnfree = true;
 
   boot.loader.grub.enable = false;
-  boot.loader.generic-extlinux-compatible.enable = true;
+  boot.loader.raspberryPi = {
+    enable = true;
+    version = 3;
+    uboot.enable = true;
+  };
 
   boot.consoleLogLevel = lib.mkDefault 7;
   # https://github.com/NixOS/nixpkgs/issues/82455
-  boot.kernelPackages = pkgs.linuxPackages_4_19;
+  # boot.kernelPackages = pkgs.linuxPackages_5_4;
 
-  # The serial ports listed here are:
-  # - ttyS0: for Tegra (Jetson TX1)
-  # - ttyAMA0: for QEMU's -machine virt
-  # Also increase the amount of CMA to ensure the virtual console on the RPi3 works.
-  boot.kernelParams = ["cma=32M" "console=ttyS0,115200n8" "console=ttyAMA0,115200n8" "console=tty0"];
+  # Increase the amount of CMA to ensure the virtual console on the RPi3 works.
+  boot.kernelParams = ["cma=32M" "console=ttyS1,115200n8" "console=tty0"];
+
+  zramSwap = {
+    enable = true;
+    memoryPercent = 80;
+  };
 
   networking.hostName = "nebula"; # Define your hostname.
   networking.interfaces.eth0 = {
@@ -33,6 +39,13 @@
 
   environment.noXlibs = true;
   services.udisks2.enable = !config.environment.noXlibs; # Pulls in X11
+  nixpkgs.config.cairo.gl = false;
+  security.polkit.enable = false;
+  nixpkgs.overlays = [
+    (self: super: {
+      rng-tools = super.rng-tools.override {withPkcs11 = false;};
+    })
+  ];
 
   environment.systemPackages = with pkgs; [
     file
@@ -73,67 +86,29 @@
   networking.hosts = {
     "192.168.1.148" = ["thanos" "binarycache.thanos" "restic.thanos" "pihole.thanos"];
     "192.168.1.20" = ["nebula" "pihole.nebula"];
+    "192.168.1.77" = [ "riza" ];
+    "192.168.1.121" = [ "orion" ];
   };
 
   #
   # Services
   #
 
-  virtualisation.oci-containers.backend = "docker";
-  virtualisation.oci-containers.containers.pihole = {
-    image = "pihole/pihole:latest";
-    ports = [
-      "192.168.1.20:53:53/tcp"
-      "192.168.1.20:53:53/udp"
-      "3080:80"
-      "30443:443"
-    ];
-    volumes = [
-      "/var/lib/pihole/:/etc/pihole/"
-      "/var/lib/dnsmasq.d:/etc/dnsmasq.d/"
-    ];
-    extraOptions = [
-      "--dns=127.0.0.1"
-      "--dns=1.1.1.1"
-    ];
-    workdir = "/var/lib/pihole/";
-  };
+  services.dnsmasq.enable = true;
+  services.dnsmasq.extraConfig = ''
+    domain-needed
+    bogus-priv
+    no-resolv
 
-  services.fail2ban = {
-    enable = true;
-    jails = {
-      nginx-botsearch = ''
-        filter   = nginx-botsearch
-        action = iptables-multiport[name=NGINXBOT, port=http,https, protocol=tcp]
-      '';
-      nginx-http-auth = ''
-        filter   = nginx-http-auth
-        action = iptables-multiport[name=NGINXAUTH, port=http,https, protocol=tcp]
-      '';
-    };
-  };
+    server=1.1.1.1
+    server=1.0.0.1
+    
+    cache-size=400
+    local-ttl=300
 
-  services.nginx = {
-    enable = true;
-    appendHttpConfig = ''
-      server_names_hash_bucket_size 64;
-    '';
-    virtualHosts = {
-      "pihole.nebula" = {
-        locations."/" = {
-          proxyPass = "http://localhost:3080";
-          extraConfig = ''
-            allow 192.168.1.0/24;
-            allow 127.0.0.1;
-            deny all;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          '';
-        };
-      };
-    };
-  };
+    conf-file=/etc/assets/hosts-blocklists/domains.txt
+    addn-hosts=/etc/assets/hosts-blocklists/hostnames.txt
+  '';
 
   #
   # Users
@@ -159,9 +134,31 @@
     ];
   };
 
-  # nixpkgs stuff
-  nix.nixPath =
-    [ "nixpkgs=/etc/nixpkgs" "nixos-config=/etc/nixos/configuration.nix" ];
+  nix.buildMachines = [ {
+    hostName = "riza";
+    system = "x86_64-linux";
+    maxJobs = 8;
+    speedFactor = 2;
+    supportedFeatures = ["big-parallel"]; # To get it to build linux
+    mandatoryFeatures = [];
+  }
+  {
+    hostName = "orion";
+    sshUser = "nix";
+    sshKey = "/root/.ssh/id_buildfarm";
+    system = "x86_64-linux";
+    maxJobs = 16;
+    speedFactor = 4;
+    supportedFeatures = ["big-parallel"]; # To get it to build linux
+    mandatoryFeatures = [];
+  }];
+  nix.distributedBuilds = true;
+
+  system.autoUpgrade = {
+    enable = true;
+    randomizedDelaySec = "45min";
+    flags = ["-j1" "--option" "build-cores" "1"];
+  };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

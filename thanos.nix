@@ -216,7 +216,6 @@ in
   ];
   services.samba = {
     enable = true;
-    syncPasswordsByPam = false;
     extraConfig = ''
       map to guest = Bad User
       get quota command = ${pkgs.writeScript "smb-quota.sh" ''
